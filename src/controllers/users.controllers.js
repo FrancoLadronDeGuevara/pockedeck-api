@@ -1,7 +1,7 @@
 const { hashingPassword } = require('../helpers/passwordHashing');
 const {
     getUsersService,
-    getByIdService,
+    getUserService,
     createUserService,
     editUserService,
     deleteUserService,
@@ -14,10 +14,9 @@ const getAllUsers = async (req, res) => {
     res.status(200).json(response);
 };
 
-const getById = catchAsync(async (req, res) => {
-    const { id } = req.params;
-    const response = await getByIdService(id);
-    res.status(200).json(response);
+const getUser = catchAsync(async (req, res) => {
+    const user = await getUserService(req.user);
+    res.status(200).json(user)
 });
 
 const createUser = catchAsync(async (req, res) => {
@@ -46,6 +45,6 @@ module.exports = {
     getAllUsers,
     createUser,
     editUser,
-    getById,
+    getUser,
     deleteUser,
 };
