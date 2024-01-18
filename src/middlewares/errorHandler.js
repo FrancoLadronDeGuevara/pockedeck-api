@@ -1,34 +1,32 @@
-// eslint-disable-next-line no-unused-vars
-const errorHandlerMiddleware = (err, req, res, next) => {
-    let statusCode = 500;
+const ErrorHandler = require("../utils/ErrorHandler");
 
-    if (err.name === 'ValidationError') {
-        statusCode = 400;
-        const errors = {};
+module.exports = (err, req, res, next) => {
+    err.statusCode = err.statusCode || 500
+    err.message = err.message || "Internal server Error"
 
-        for (const field in err.errors) {
-            errors[field] = err.errors[field].message;
-        }
 
-        return res.status(statusCode).json({
-            error: {
-                status: statusCode,
-                message: 'Error de validación',
-                errors,
-            },
-        });
+    if (err.name === "CastError") {
+        const message = `Assources not found with this id.. Invalid ${err.path}`;
+        err = new ErrorHandler(message, 400);
     }
 
-    if (err.statusCode) {
-        statusCode = err.statusCode;
+    if (err.code === 11000) {
+        const message = `Duplicate key ${Object.keys(err.keyValue)} Entered`;
+        err = new ErrorHandler(message, 400);
     }
 
-    res.status(statusCode).json({
-        error: {
-            status: statusCode,
-            message: err.message || 'Ha ocurrido un error en el servidor.',
-        },
-    });
-};
+    if (err.name === "jsonWebTokenError") {
+        const message = `Your url is invalid please try again latter`;
+        err = new ErrorHandler(message, 400);
+    }
 
-module.exports = errorHandlerMiddleware;
+    if (err.name === "TokenExpiredError") {
+        const message = `Your url is expired please try again latter`;
+        err = new ErrorHandler(message, 400);
+    }
+
+    res.status(err.statusCode).json({
+        success: false,
+        message: err.message,
+    })
+}

@@ -1,13 +1,18 @@
 const jwt = require('jsonwebtoken');
 const catchAsync = require('../utils/catchAsync');
 const { jwtParams } = require('../config/config');
+const ErrorHandler = require('../utils/ErrorHandler');
 
 const isAuthenticated = catchAsync(async (req, res, next) => {
     const token = req.headers['access-token'];
-    if (!token) return res.status(401).json('Token inexistente');
+    if (!token){
+        return next(new ErrorHandler('Token inexistente', 401))
+    } 
     
     jwt.verify(token, jwtParams.secret, (error, decoded) => {
-        if (error) return res.status(401).json('Token invalido');
+        if (error){
+            return next(new ErrorHandler('Token invalido', 401))
+        } 
         req.user = decoded;
         next();
     });

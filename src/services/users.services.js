@@ -12,6 +12,10 @@ const getUserService = async (id) => {
     return User.findById(id);
 };
 
+const getUsernameService = async(username) => {
+    return User.findOne({username})
+}
+
 const createUserService = async (payload) => {
     const newUser = new User(payload);
     return await newUser.save();
@@ -36,4 +40,5 @@ module.exports = {
     editUserService,
     deleteUserService,
     getByEmailService,
+    getUsernameService
 };

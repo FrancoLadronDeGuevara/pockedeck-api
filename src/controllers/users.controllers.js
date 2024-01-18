@@ -5,8 +5,10 @@ const {
     createUserService,
     editUserService,
     deleteUserService,
+    getUsernameService,
 } = require('../services/users.services');
 const catchAsync = require('../utils/catchAsync');
+const bcrypt = require('bcrypt');
 
 const getAllUsers = async (req, res) => {
     const response = await getUsersService();
@@ -34,6 +36,37 @@ const editUser = catchAsync(async (req, res) => {
     res.status(200).json(response);
 });
 
+const updateUser = catchAsync(async (req, res) => {
+    const  { id } = req.params;
+    const payload = req.body;
+
+    const user = await getUserService(id);
+console.log(payload)
+    if (payload.avatar) {
+        user.avatar.url = payload.avatar.url
+    }
+
+    if (payload.username) {
+        const existingUser = await getUsernameService(payload.username);
+        if (existingUser) {
+            return res.status(400).json('El nombre de usuario ya se encuentra en uso');
+        }
+        user.username = payload.username;
+    }
+    
+    if (payload.oldPassword){
+        const isPasswordValid = await user.comparePassword(payload.oldPassword);
+        if(!isPasswordValid) return res.status(400).json('La contraseña actual es incorrecta');
+        if(payload.oldPassword == payload.newPassword) return res.status(400).json('La nueva contraseña debe ser diferente a la actual');
+        user.password = await bcrypt.hash(payload.newPassword, 10);
+        
+    }
+
+    const response = await editUserService(id, user);
+    if (response == null) return res.status(404).json('Usuario no encontrado');
+    res.status(200).json(response);
+})
+
 const deleteUser = catchAsync(async (req, res) => {
     const { id } = req.params;
     const response = await deleteUserService(id);
@@ -45,6 +78,7 @@ module.exports = {
     getAllUsers,
     createUser,
     editUser,
+    updateUser,
     getUser,
     deleteUser,
 };
