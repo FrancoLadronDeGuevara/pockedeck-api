@@ -5,9 +5,12 @@ const { jwtParams } = require('../config/config');
 const catchAsync = require('../utils/catchAsync');
 
 const login = catchAsync(async (req, res) => {
-    const { email, password } = req.body;
+    const { email, password} = req.body;
     const userExist = await getByEmailService(email);
-    if (!userExist) return res.status(404).json('El usuario no se encuentra registrado.');
+
+    if(userExist.disabled) return res.status(404).json('Tu cuenta se encuentra deshabilitada');
+
+    if (!userExist) return res.status(404).json('El email no se encuentra registrado.');
 
     const passMatch = await passwordMatch(password, userExist.password);
     if (!passMatch) return res.status(404).json('El email o la contraseña son incorrectos.');
@@ -21,7 +24,7 @@ const login = catchAsync(async (req, res) => {
         expiresIn: jwtParams.exporesIn || 120,
     });
 
-    res.status(200).json({ msg: 'Login successfully', token, });
+    res.status(200).json({ msg: 'Inicio de sesión exitoso', token, });
 });
 
 module.exports = {

@@ -6,6 +6,16 @@ const userSchema = new Schema(
             type: String,
             unique: true,
         },
+        avatar: {
+            public_id: {
+                type: String,
+                default: 'avatars/b2sqa60qxr6w7muy24xo'
+            },
+            url: {
+                type: String,
+                default: 'https://res.cloudinary.com/dnlvoza12/image/upload/v1705120529/avatars/b2sqa60qxr6w7muy24xo.png'
+            },
+        },
         email: {
             type: String,
             required: [true, 'El email es obligatorio.'],
@@ -26,9 +36,9 @@ const userSchema = new Schema(
             default: 100,
         },
         userDeck: [{
-            card: { 
-                type: Schema.Types.ObjectId, 
-                ref: 'Card' 
+            card: {
+                type: Schema.Types.ObjectId,
+                ref: 'Card'
             },
             quantity: {
                 type: Number,
