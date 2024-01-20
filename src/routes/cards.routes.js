@@ -18,7 +18,7 @@ route.get('/getByPokedexNumber/:pokedexNumber', isAuthenticated, getByPokedexNum
 
 route.get('/getById/:id', isAuthenticated, validateRole,[idCardValidation.id], validateFields, getCardById);
 
-route.post('/create', [createCardsValidations.pokedexNumber, createCardsValidations.name, createCardsValidations.types, createCardsValidations.imageCard, createCardsValidations.rarity], validateFields, isAuthenticated, validateRole, createCard);
+route.post('/create', [createCardsValidations.pokedexNumber, createCardsValidations.name, createCardsValidations.rarity], validateFields, isAuthenticated, validateRole, createCard);
 
 route.patch('/edit/:id', isAuthenticated, validateRole, [idCardValidation.id], validateFields, editCard);
 

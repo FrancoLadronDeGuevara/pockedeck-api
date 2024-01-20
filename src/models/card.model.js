@@ -5,7 +5,7 @@ const cardSchema = new Schema(
         pokedexNumber: {
             type: Number,
             required: [true, 'El número de Pokedex es obligatorio.'],
-            unique: true,
+            unique: [true, 'Ya existe un Pokémon con este número de Pokedex.']
         },
         name: {
             type: String,

@@ -13,18 +13,6 @@ const createCardsValidations = {
     .isString()
     .withMessage('El nombre debe ser una cadena de texto.'),
 
-    types: body('types')
-    .not()
-    .isEmpty()
-    .isArray()
-    .withMessage('El campo tipos debe ser un array.'),
-
-    imageCard: body('imageCard')
-    .not()
-    .isEmpty()
-    .isURL()
-    .withMessage('La imagen debe ser una URL válida.'),
-
     rarity: body('rarity')
     .isIn(['Normal', 'Rara', 'Epica', 'Legendaria'])
     .withMessage('La rareza debe ser una de: Normal, Rara, Epica, Legendaria.'),

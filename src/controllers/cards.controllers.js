@@ -29,6 +29,7 @@ const getCardById = catchAsync(async (req, res) => {
 
 const createCard = catchAsync(async (req, res) =>{
     const payload = req.body;
+
     await createCardService(payload)
     res.status(201).json('Carta creada con exito');
 })
