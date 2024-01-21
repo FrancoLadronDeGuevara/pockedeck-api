@@ -6,13 +6,13 @@ const {
     getCardById, 
     createCard, 
     editCard, 
-    deleteCard
+    deleteCard,
 } = require('../controllers/cards.controllers');
 const { createCardsValidations, idCardValidation } = require('../validations/cards.validations');
 const { isAuthenticated, validateRole } = require('../middlewares/auth');
 const { validateFields } = require('../middlewares/validateFields');
 
-route.get('/', getAllCards);
+route.get('/', isAuthenticated, validateRole, getAllCards);
 
 route.get('/getByPokedexNumber/:pokedexNumber', isAuthenticated, getByPokedexNumber);
 

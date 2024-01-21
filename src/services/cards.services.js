@@ -21,7 +21,6 @@ const editCardService = async (id, payload) => {
     const options = {
         new: true,
     }
-
     return await Card.findByIdAndUpdate(id, payload, options);
 }
 

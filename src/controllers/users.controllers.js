@@ -41,7 +41,7 @@ const updateUser = catchAsync(async (req, res) => {
     const payload = req.body;
 
     const user = await getUserService(id);
-console.log(payload)
+
     if (payload.avatar) {
         user.avatar.url = payload.avatar.url
     }
