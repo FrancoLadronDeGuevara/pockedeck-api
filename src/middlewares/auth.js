@@ -2,30 +2,34 @@ const jwt = require('jsonwebtoken');
 const catchAsync = require('../utils/catchAsync');
 const { jwtParams } = require('../config/config');
 const ErrorHandler = require('../utils/ErrorHandler');
+const User = require('../models/user.model');
 
-const isAuthenticated = catchAsync(async (req, res, next) => {
-    const token = req.headers['access-token'];
-    if (!token){
-        return next(new ErrorHandler('Token inexistente', 401))
-    } 
-    
-    jwt.verify(token, jwtParams.secret, (error, decoded) => {
-        if (error){
-            return next(new ErrorHandler('Token invalido', 401))
-        } 
-        req.user = decoded;
-        next();
-    });
-});
+exports.isAuthenticated = catchAsync(async(req,res,next) => {
+    const {token} = req.cookies;
 
-const validateRole = catchAsync((req, res, next) => {
-    const user = req.user;
-    if (user.role !== 'admin')
-        return res.status(401).json('Usuario no autorizado');
+    if(!token){
+        return next(new ErrorHandler("Por favor, inicia sesión primero", 401));
+    }
+
+    const decoded = jwt.verify(token, jwtParams.secret);
+
+    req.user = await User.findById(decoded.id);
+
     next();
 });
 
-module.exports = {
-    isAuthenticated,
-    validateRole,
-};
+exports.isAdmin = (...roles) => {
+    return (req,res,next) => {
+        if(!roles.includes(req.user.role)){
+            return next(new ErrorHandler(`${req.user.role} no puedes acceder a estos recursos!`))
+        };
+        next();
+    }
+}
+
+// exports.isAdmin = catchAsync((req, res, next) => {
+//     const user = req.user;
+//     if (user.role !== 'admin')
+//         return next(new ErrorHandler(`${req.user.role} no puedes acceder a estos recursos!`))
+//     next();
+// });

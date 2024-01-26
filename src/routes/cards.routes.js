@@ -9,19 +9,19 @@ const {
     deleteCard,
 } = require('../controllers/cards.controllers');
 const { createCardsValidations, idCardValidation } = require('../validations/cards.validations');
-const { isAuthenticated, validateRole } = require('../middlewares/auth');
+const { isAuthenticated, isAdmin } = require('../middlewares/auth');
 const { validateFields } = require('../middlewares/validateFields');
 
-route.get('/', isAuthenticated, validateRole, getAllCards);
+route.get('/',isAuthenticated, isAdmin('admin'), getAllCards);
 
-route.get('/getByPokedexNumber/:pokedexNumber', isAuthenticated, getByPokedexNumber);
+route.get('/getByPokedexNumber/:pokedexNumber',  getByPokedexNumber);
 
-route.get('/getById/:id', isAuthenticated, validateRole,[idCardValidation.id], validateFields, getCardById);
+route.get('/getById/:id', isAuthenticated, isAdmin('admin'),[idCardValidation.id], validateFields, getCardById);
 
-route.post('/create', [createCardsValidations.pokedexNumber, createCardsValidations.name, createCardsValidations.rarity], validateFields, isAuthenticated, validateRole, createCard);
+route.post('/create', isAuthenticated, isAdmin('admin'), [createCardsValidations.pokedexNumber, createCardsValidations.name, createCardsValidations.rarity], validateFields,  createCard);
 
-route.patch('/edit/:id', isAuthenticated, validateRole, [idCardValidation.id], validateFields, editCard);
+route.patch('/edit/:id',isAuthenticated, isAdmin('admin'),  [idCardValidation.id], validateFields, editCard);
 
-route.delete('/delete/:id', isAuthenticated, validateRole, [idCardValidation.id], validateFields, deleteCard);
+route.delete('/delete/:id', isAuthenticated, isAdmin('admin'), [idCardValidation.id], validateFields, deleteCard);
 
 module.exports = route;

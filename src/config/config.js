@@ -7,8 +7,8 @@ const serverConfig = {
 };
 
 const jwtParams = {
-    secret: process.env.SECRET_KEY,
-    exporesIn: process.env.TOKEN_EXPIRES_IN,
+    secret: process.env.JWT_SECRET_KEY,
+    expiresIn: process.env.TOKEN_EXPIRES_IN,
 };
 
 module.exports = {

@@ -1,5 +1,6 @@
 const { Schema, model } = require('mongoose');
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 const userSchema = new Schema(
     {
@@ -61,6 +62,12 @@ userSchema.pre('save', function (next) {
 
     next();
 });
+
+userSchema.methods.getJwtToken = function () {
+    return jwt.sign({ id: this._id }, process.env.JWT_SECRET_KEY, {
+        expiresIn: process.env.TOKEN_EXPIRES_IN,
+    });
+};
 
 userSchema.methods.comparePassword = async function (enteredPassword) {
     return await bcrypt.compare(enteredPassword, this.password);
