@@ -4,6 +4,14 @@ const getCardsService = async () =>{
     return Card.find({});
 }
 
+const getCardsByRarity = async (rarity) =>{
+    return Card.find({rarity})
+}
+
+const getCardsByName = async (name) => {
+    return Card.find({name})
+}
+
 const getByPokedexNumberService = async (pokedexNumber) =>{
     return Card.findOne({pokedexNumber});
 }
@@ -30,6 +38,8 @@ const deleteCardService = async (id) =>{
 
 module.exports = {
     getCardsService,
+    getCardsByRarity,
+    getCardsByName,
     getByPokedexNumberService,
     getCardByIdService,
     createCardService,

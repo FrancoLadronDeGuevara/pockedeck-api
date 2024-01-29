@@ -13,9 +13,9 @@ const createChestsValidations = {
     .isString()
     .withMessage('La descripción debe ser una cadena de texto.'),
 
-    typeName: body('typeName')
-    .isIn(['Normal', 'Raro', 'Epico', 'Legendario'])
-    .withMessage('La tipo debe ser una de: Normal, Raro, Epico, Legendario.'),
+    // typeName: body('typeName')
+    // .isIn(['Normal', 'Raro', 'Epico', 'Legendario'])
+    // .withMessage('La tipo debe ser una de: Normal, Raro, Epico, Legendario.'),
 
     price: body('price')
     .not()
@@ -23,11 +23,11 @@ const createChestsValidations = {
     .isInt()
     .withMessage('El precio debe ser un valor entero'),
 
-    cards: body('cards')
-    .not()
-    .isEmpty()
-    .isArray()
-    .withMessage('El campo cards debe ser un array.'),
+    // cards: body('cards')
+    // .not()
+    // .isEmpty()
+    // .isArray()
+    // .withMessage('El campo cards debe ser un array.'),
 }
 
 const idChestValidation = {

@@ -44,7 +44,7 @@ const userSchema = new Schema(
             },
             quantity: {
                 type: Number,
-                default: 0,
+                default: 1,
             },
         }],
         disabled: {

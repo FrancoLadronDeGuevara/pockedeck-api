@@ -1,3 +1,4 @@
+const { getCardsByRarity, getCardsByName } = require('../services/cards.services');
 const {
     getChestsService,
     getChestByIdService,
@@ -6,11 +7,30 @@ const {
     deleteChestService,
 } = require('../services/chests.services');
 const catchAsync = require('../utils/catchAsync');
+const ErrorHandler = require('../utils/ErrorHandler');
 
-const getAllChests = catchAsync(async (req, res) =>{
+const getAllChests = catchAsync(async (req, res) => {
     const response = await getChestsService();
     if (response.length === 0) return res.status(404).json('No se encontraron Cofres');
     res.status(200).json(response);
+})
+
+const openChest = catchAsync(async (req, res, next) => {
+    try {
+        const { userId, chestId } = req.body;
+
+        const chest = await getChestByIdService(chestId);
+
+        if (!chest) {
+            return res.status(404).json({ error: 'Cofre no encontrado' });
+        }
+
+        const cardsToDeliver = await chest.openChest(userId);
+
+        res.status(200).json({ cards: cardsToDeliver });
+    } catch (error) {
+        return next(new ErrorHandler(error.message, 500));
+    }
 })
 
 const getChestById = catchAsync(async (req, res) => {
@@ -19,10 +39,37 @@ const getChestById = catchAsync(async (req, res) => {
     res.status(200).json(response);
 });
 
-const createChest = catchAsync(async (req, res) =>{
-    const payload = req.body;
-    await createChestService(payload)
-    res.status(201).json('Cofre creado con exito');
+const createChest = catchAsync(async (req, res, next) => {
+    try {
+        const payload = req.body;
+        let cardsChest = {};
+
+        if(payload.rarityOfCards){
+            const cardsByRarity = await getCardsByRarity(payload.rarityOfCards)
+            cardsChest = {cards: cardsByRarity}
+        }
+
+        if(payload.selectedCards){
+            const cardsSelected = await getCardsByName(payload.selectedCards)
+            cardsChest.cards = cardsChest.cards ? [...cardsChest.cards, ...cardsSelected] : cardsSelected;
+        }
+
+        const chest = {
+            chestImage: payload.chestImage,
+            name: payload.name,
+            description: payload.description,
+            typeName: payload.chestType,
+            quantityOfCards: payload.quantityOfCards,
+            price: payload.price,
+            rarityOfCards: payload.rarityOfCards,
+            cards: cardsChest.cards,
+        }
+
+        await createChestService(chest)
+        res.status(201).json('Cofre creado con exito');
+    } catch (error) {
+        return next(new ErrorHandler(error.message, 500));
+    }
 });
 
 const editChest = catchAsync(async (req, res) => {
@@ -41,6 +88,7 @@ const deleteChest = catchAsync(async (req, res) => {
 });
 
 module.exports = {
+    openChest,
     getAllChests,
     getChestById,
     createChest,
