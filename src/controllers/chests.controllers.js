@@ -1,4 +1,4 @@
-const { getCardsByParameter } = require('../services/cards.services');
+const { getCardsByNameService, getCardsByRarityService } = require('../services/cards.services');
 const {
     getChestsService,
     getChestByIdService,
@@ -45,12 +45,12 @@ const createChest = catchAsync(async (req, res, next) => {
         let cardsChest = {};
 
         if(payload.rarityOfCards){
-            const cardsByRarity = await getCardsByParameter(payload.rarityOfCards)
+            const cardsByRarity = await getCardsByRarityService(payload.rarityOfCards)
             cardsChest = {cards: cardsByRarity}
         }
 
         if(payload.selectedCards){
-            const cardsSelected = await getCardsByParameter(payload.selectedCards)
+            const cardsSelected = await getCardsByNameService(payload.selectedCards)
             cardsChest.cards = cardsChest.cards ? [...cardsChest.cards, ...cardsSelected] : cardsSelected;
         }
 
@@ -72,10 +72,39 @@ const createChest = catchAsync(async (req, res, next) => {
     }
 });
 
-const editChest = catchAsync(async (req, res) => {
+const editChest = catchAsync(async (req, res, next) => {
     const { id } = req.params;
     const payload = req.body;
-    const response = await editChestService(id, payload);
+
+    const chest = await getChestByIdService(id);
+
+    if(!chest) return  next(new ErrorHandler('No existe el cofre', 404))
+
+    if(payload.name){
+        chest.name = payload.name;
+    }
+
+    if(payload.description){
+        chest.description = payload.description;
+    }
+
+    if(payload.price){
+        chest.price = payload.price;
+    }
+
+    if(payload.type){
+        chest.typeName = payload.type;
+    }
+
+    if(payload.quantity){
+        chest.quantityOfCards = payload.quantity;
+    }
+
+    if(payload.imageChest){
+        chest.chestImage = payload.imageChest;
+    }
+
+    const response = await editChestService(id, chest);
     if (response == null) return res.status(404).json('Cofre no encontrada');
     res.status(200).json(response);
 });
