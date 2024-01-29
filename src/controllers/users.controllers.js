@@ -7,31 +7,39 @@ const {
     deleteUserService,
     getUsernameService,
     getByEmailService,
+    getUserDeckService,
 } = require('../services/users.services');
 const catchAsync = require('../utils/catchAsync');
 const bcrypt = require('bcrypt');
 const ErrorHandler = require('../utils/ErrorHandler');
 const sendToken = require('../utils/jwtToken');
 
+const createUser = catchAsync(async (req, res) => {
+    const payload = req.body;
+    const userWithPassHash = await hashingPassword(payload);
+    await createUserService(userWithPassHash);
+    res.status(201).json('Usuario creado con exito');
+});
+
 const loginUser = catchAsync(async (req, res, next) => {
     try {
         const { email, password } = req.body;
 
         const user = await getByEmailService(email);
-        
+
         if (user && user.disabled) {
             return next(new ErrorHandler('Tu cuenta se encuentra deshabilitada', 400));
         }
-        
+
         if (!user) {
             return next(new ErrorHandler('El email no se encuentra registrado', 400))
         };
-        
+
         const passMatch = await passwordMatch(password, user.password);
         if (!passMatch) {
             return next(new ErrorHandler('El email o la contraseña son incorrectos', 400))
         };
-        
+
         sendToken(user, 201, res)
     } catch (error) {
         return next(new ErrorHandler(error.message, 500));
@@ -55,16 +63,6 @@ const logoutUser = catchAsync(async (req, res, next) => {
     }
 });
 
-const getAllUsers = async (req, res, next) => {
-    try {
-        const response = await getUsersService();
-        if (response.length === 0) return next(new ErrorHandler("No se encontraron usuarios", 404));
-        res.status(201).json(response);
-    } catch (error) {
-        return next(new ErrorHandler(error.message, 500));
-    }
-};
-
 const getUser = catchAsync(async (req, res, next) => {
     try {
         const user = await getUserService(req.user.id);
@@ -78,12 +76,30 @@ const getUser = catchAsync(async (req, res, next) => {
     }
 });
 
-const createUser = catchAsync(async (req, res) => {
-    const payload = req.body;
-    const userWithPassHash = await hashingPassword(payload);
-    await createUserService(userWithPassHash);
-    res.status(201).json('Usuario creado con exito');
-});
+const getUserDeck = catchAsync(async (req, res, next) => {
+    try {
+        const user = await getUserDeckService(req.user.id);
+
+        if (!user) {
+            return next(new ErrorHandler("Usuario no encontrado", 400));
+        }
+
+        res.status(200).json(user.userDeck);
+    } catch (error) {
+        return next(new ErrorHandler(error.message, 500));
+    }
+})
+
+
+const getAllUsers = async (req, res, next) => {
+    try {
+        const response = await getUsersService();
+        if (response.length === 0) return next(new ErrorHandler("No se encontraron usuarios", 404));
+        res.status(201).json(response);
+    } catch (error) {
+        return next(new ErrorHandler(error.message, 500));
+    }
+};
 
 const editUser = catchAsync(async (req, res) => {
     const { id } = req.params;
@@ -132,12 +148,13 @@ const deleteUser = catchAsync(async (req, res) => {
 });
 
 module.exports = {
+    createUser,
     loginUser,
     logoutUser,
+    getUser,
+    getUserDeck,
     getAllUsers,
-    createUser,
     editUser,
     updateUser,
-    getUser,
     deleteUser,
 };

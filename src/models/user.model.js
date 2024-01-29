@@ -37,16 +37,12 @@ const userSchema = new Schema(
             type: Number,
             default: 100,
         },
-        userDeck: [{
-            card: {
+        userDeck: [
+            {
                 type: Schema.Types.ObjectId,
-                ref: 'Card'
-            },
-            quantity: {
-                type: Number,
-                default: 1,
-            },
-        }],
+                ref: 'card'
+            }
+        ],
         disabled: {
             type: Boolean,
             default: false,

@@ -1,4 +1,4 @@
-const { getCardsByRarity, getCardsByName } = require('../services/cards.services');
+const { getCardsByParameter } = require('../services/cards.services');
 const {
     getChestsService,
     getChestByIdService,
@@ -45,12 +45,12 @@ const createChest = catchAsync(async (req, res, next) => {
         let cardsChest = {};
 
         if(payload.rarityOfCards){
-            const cardsByRarity = await getCardsByRarity(payload.rarityOfCards)
+            const cardsByRarity = await getCardsByParameter(payload.rarityOfCards)
             cardsChest = {cards: cardsByRarity}
         }
 
         if(payload.selectedCards){
-            const cardsSelected = await getCardsByName(payload.selectedCards)
+            const cardsSelected = await getCardsByParameter(payload.selectedCards)
             cardsChest.cards = cardsChest.cards ? [...cardsChest.cards, ...cardsSelected] : cardsSelected;
         }
 

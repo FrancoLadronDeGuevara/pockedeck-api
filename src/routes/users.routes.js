@@ -8,21 +8,24 @@ const {
     editUser, 
     updateUser,
     getUser, 
-    deleteUser, 
+    deleteUser,
+    getUserDeck, 
 } = require('../controllers/users.controllers');
 const { createUsersValidations, idUserValidation } = require('../validations/users.validations');
 const { isAuthenticated, isAdmin } = require('../middlewares/auth');
 const { validateFields } = require('../middlewares/validateFields');
 
-route.post('/login-user', loginUser)
+route.post('/create', [createUsersValidations.email, createUsersValidations.password], validateFields, createUser);
 
-route.get('/logout-user', logoutUser)
+route.post('/login-user', loginUser);
+
+route.get('/logout-user', logoutUser);
 
 route.get('/getUser', isAuthenticated, getUser);
 
-route.get('/', isAuthenticated, isAdmin('admin'), getAllUsers);
+route.get('/userDeck', isAuthenticated, getUserDeck);
 
-route.post('/create', [createUsersValidations.email, createUsersValidations.password], validateFields, createUser);
+route.get('/', isAuthenticated, isAdmin('admin'), getAllUsers);
 
 route.patch('/edit/:id', isAuthenticated, isAdmin('admin'), [idUserValidation.id], validateFields, editUser);
 
