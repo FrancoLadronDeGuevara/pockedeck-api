@@ -13,6 +13,7 @@ const catchAsync = require('../utils/catchAsync');
 const bcrypt = require('bcrypt');
 const ErrorHandler = require('../utils/ErrorHandler');
 const sendToken = require('../utils/jwtToken');
+const { getByPokedexNumberService } = require('../services/cards.services');
 
 const createUser = catchAsync(async (req, res) => {
     const payload = req.body;
@@ -90,6 +91,31 @@ const getUserDeck = catchAsync(async (req, res, next) => {
     }
 })
 
+const getCoins = catchAsync( async (req, res, next) => {
+    try {
+        const payload = req.body;
+
+        const user = await getUserService(req.user.id);
+        const pokemon = await getByPokedexNumberService(payload.id)
+
+        if (!user) {
+            return next(new ErrorHandler("El usuario no existe", 400));
+        }
+        
+
+        if (payload.pokemonName.toLowerCase() === pokemon.name.toLowerCase()) {
+            user.coins += 10;
+            await user.save(); 
+            return res.status(200).json(user.coins);
+        } else {
+            return res.status(200).json({ message: '¡Lo siento! No has ganado monedas, inténtalo de nuevo.' });
+        }
+
+    } catch (error) {
+        return next(new ErrorHandler(error.message, 500));
+    }
+})
+
 
 const getAllUsers = async (req, res, next) => {
     try {
@@ -153,6 +179,7 @@ module.exports = {
     logoutUser,
     getUser,
     getUserDeck,
+    getCoins,
     getAllUsers,
     editUser,
     updateUser,

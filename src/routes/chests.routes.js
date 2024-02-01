@@ -20,8 +20,8 @@ route.get('/getById/:id',  [idChestValidation.id], validateFields, getChestById)
 
 route.post('/create', isAuthenticated, isAdmin('admin'), [createChestsValidations.name, createChestsValidations.description, createChestsValidations.price], validateFields,  createChest);
 
-route.patch('/edit/:id',  [idChestValidation.id], validateFields, editChest);
+route.patch('/edit/:id', isAuthenticated, isAdmin('admin'),  [idChestValidation.id], validateFields, editChest);
 
-route.delete('/delete/:id',  [idChestValidation.id], validateFields, deleteChest);
+route.delete('/delete/:id', isAuthenticated, isAdmin('admin'),  [idChestValidation.id], validateFields, deleteChest);
 
 module.exports = route;
