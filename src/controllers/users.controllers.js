@@ -108,7 +108,7 @@ const getCoins = catchAsync( async (req, res, next) => {
             await user.save(); 
             return res.status(200).json(user.coins);
         } else {
-            return res.status(200).json({ message: '¡Lo siento! No has ganado monedas, inténtalo de nuevo.' });
+            return res.status(400).json({ message: '¡Lo siento! No has ganado monedas, inténtalo de nuevo.' });
         }
 
     } catch (error) {
