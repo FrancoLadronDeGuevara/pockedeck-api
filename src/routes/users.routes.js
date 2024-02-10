@@ -10,7 +10,6 @@ const {
     getUser, 
     deleteUser,
     getUserDeck,
-    getCoins, 
 } = require('../controllers/users.controllers');
 const { createUsersValidations, idUserValidation } = require('../validations/users.validations');
 const { isAuthenticated, isAdmin } = require('../middlewares/auth');
@@ -25,8 +24,6 @@ route.get('/logout-user', logoutUser);
 route.get('/getUser', isAuthenticated, getUser);
 
 route.get('/userDeck', isAuthenticated, getUserDeck);
-
-route.patch('/getCoins', isAuthenticated, getCoins)
 
 route.get('/', isAuthenticated, isAdmin('admin'), getAllUsers);
 

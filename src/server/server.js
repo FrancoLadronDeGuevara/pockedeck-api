@@ -31,13 +31,15 @@ app.use(cookieParser());
 
 //routes
 const userRoutes = require('../routes/users.routes');
-const cardsRoutes = require('../routes/cards.routes')
-const chestsRoutes = require('../routes/chests.routes')
+const cardsRoutes = require('../routes/cards.routes');
+const chestsRoutes = require('../routes/chests.routes');
+const minigamesRoutes = require('../routes/minigames.routes');
 
 //useRoutes
 app.use('/api/users', userRoutes);
 app.use('/api/cards', cardsRoutes);
 app.use('/api/chests', chestsRoutes);
+app.use('/api/minigames', minigamesRoutes);
 
 
 //middleware error handler

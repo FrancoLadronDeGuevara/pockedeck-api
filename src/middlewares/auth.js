@@ -26,10 +26,3 @@ exports.isAdmin = (...roles) => {
         next();
     }
 }
-
-// exports.isAdmin = catchAsync((req, res, next) => {
-//     const user = req.user;
-//     if (user.role !== 'admin')
-//         return next(new ErrorHandler(`${req.user.role} no puedes acceder a estos recursos!`))
-//     next();
-// });
