@@ -18,6 +18,9 @@ const getGuessPokemonCoins = catchAsync(async (req, res, next) => {
         if (payload.pokemonName.toLowerCase() === pokemon.name.toLowerCase()) {
             user.coins += 10;
             user.score.scoreGuessPokemon += 1;
+            if(user.score.scoreGuessPokemon > user.score.maxScore.maxScoreGuessPokemon){
+                user.score.maxScore.maxScoreGuessPokemon = user.score.scoreGuessPokemon
+            }
             await user.save();
             return res.status(200).json(user);
         } else {

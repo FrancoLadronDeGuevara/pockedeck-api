@@ -14,11 +14,16 @@ const getUserService = async (id) => {
 
 const getUserDeckService = async (id) => {
     return User.findById(id)
-        .populate('userDeck');;
+        .populate('userDeck');
 }
 
 const getUsernameService = async (username) => {
     return User.findOne({ username })
+}
+
+const getUserProfileService = async (username) => {
+    return User.findOne({ username })
+        .populate('userDeck');
 }
 
 const createUserService = async (payload) => {
@@ -46,5 +51,6 @@ module.exports = {
     editUserService,
     deleteUserService,
     getByEmailService,
-    getUsernameService
+    getUsernameService,
+    getUserProfileService
 };

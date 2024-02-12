@@ -51,6 +51,12 @@ const userSchema = new Schema(
             scoreGuessPokemon: {
                 type: Number,
                 default: 0
+            },
+            maxScore: {
+                maxScoreGuessPokemon: {
+                    type: Number,
+                    default: 0
+                },
             }
         }
     },

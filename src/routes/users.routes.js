@@ -8,6 +8,7 @@ const {
     editUser, 
     updateUser,
     getUser, 
+    getUserProfile,
     deleteUser,
     getUserDeck,
 } = require('../controllers/users.controllers');
@@ -21,9 +22,11 @@ route.post('/login-user', loginUser);
 
 route.get('/logout-user', logoutUser);
 
-route.get('/getUser', isAuthenticated, getUser);
+route.get('/get-user', isAuthenticated, getUser);
 
-route.get('/userDeck', isAuthenticated, getUserDeck);
+route.get('/profile/:username', isAuthenticated, getUserProfile)
+
+route.get('/user-deck', isAuthenticated, getUserDeck);
 
 route.get('/', isAuthenticated, isAdmin('admin'), getAllUsers);
 

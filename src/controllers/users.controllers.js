@@ -8,6 +8,7 @@ const {
     getUsernameService,
     getByEmailService,
     getUserDeckService,
+    getUserProfileService,
 } = require('../services/users.services');
 const catchAsync = require('../utils/catchAsync');
 const bcrypt = require('bcrypt');
@@ -71,6 +72,22 @@ const getUser = catchAsync(async (req, res, next) => {
             return next(new ErrorHandler("El usuario no existe", 400));
         }
         res.status(200).json(user)
+    } catch (error) {
+        return next(new ErrorHandler(error.message, 500));
+    }
+});
+
+const getUserProfile = catchAsync( async (req, res, next) => {
+    try {
+        const { username } = await req.params;
+
+        const userFound = await getUserProfileService(username);
+        
+        if(!userFound){
+            return next(new ErrorHandler("Usuario no encontrado", 400));
+        }
+
+        res.status(200).json(userFound);
     } catch (error) {
         return next(new ErrorHandler(error.message, 500));
     }
@@ -151,6 +168,7 @@ module.exports = {
     loginUser,
     logoutUser,
     getUser,
+    getUserProfile,
     getUserDeck,
     getAllUsers,
     editUser,
