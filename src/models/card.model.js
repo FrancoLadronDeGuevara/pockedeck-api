@@ -24,9 +24,22 @@ const cardSchema = new Schema(
             enum: ['Normal', 'Rara', 'Epica', 'Legendaria'],
             required: [true, 'El campo rareza es obligatorio'],
         },
-        unlocked: {
-            type: Boolean,
-            default: false
+        price: {
+            type: Number,
+            default: function() {
+                switch (this.rarity) {
+                    case 'Normal':
+                        return 10;
+                    case 'Rara':
+                        return 30;
+                    case 'Epica':
+                        return 50;
+                    case 'Legendaria':
+                        return 70;
+                    default:
+                        return 1000;
+                }
+            }
         }
     }
 );
