@@ -3,6 +3,7 @@ const route = Router();
 const {
     getAllCards, 
     getByPokedexNumber, 
+    sellCard,
     getCardById, 
     createCard, 
     editCard, 
@@ -15,6 +16,8 @@ const { validateFields } = require('../middlewares/validateFields');
 route.get('/',isAuthenticated, isAdmin('admin'), getAllCards);
 
 route.get('/getByPokedexNumber/:pokedexNumber',  getByPokedexNumber);
+
+route.post('/sell-card', isAuthenticated, sellCard)
 
 route.get('/getById/:id', isAuthenticated, isAdmin('admin'),[idCardValidation.id], validateFields, getCardById);
 

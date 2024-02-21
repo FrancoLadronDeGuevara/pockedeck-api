@@ -47,18 +47,23 @@ const userSchema = new Schema(
             type: Boolean,
             default: false,
         },
-        score: {
-            scoreGuessPokemon: {
-                type: Number,
-                default: 0
-            },
-            maxScore: {
-                maxScoreGuessPokemon: {
-                    type: Number,
-                    default: 0
-                },
-            }
-        }
+        scoreGuessPokemon: {
+            type: Number,
+            default: 0
+        },
+        scoreFlapHunter: {
+            type: Number,
+            default: 0
+        },
+        maxScoreGuessPokemon: {
+            type: Number,
+            default: 0
+        },
+        maxScoreFlapHunter: {
+            type: Number,
+            default: 0
+        },
+
     },
     { timestamps: true }
 );

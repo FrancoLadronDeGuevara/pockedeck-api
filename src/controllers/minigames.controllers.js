@@ -1,4 +1,5 @@
 const { getByPokedexNumberService } = require("../services/cards.services");
+const { getTopScores } = require("../services/minigames.services");
 const { getUserService } = require("../services/users.services");
 const catchAsync = require("../utils/catchAsync");
 const ErrorHandler = require("../utils/ErrorHandler");
@@ -17,9 +18,9 @@ const getGuessPokemonCoins = catchAsync(async (req, res, next) => {
 
         if (payload.pokemonName.toLowerCase() === pokemon.name.toLowerCase()) {
             user.coins += 10;
-            user.score.scoreGuessPokemon += 1;
-            if(user.score.scoreGuessPokemon > user.score.maxScore.maxScoreGuessPokemon){
-                user.score.maxScore.maxScoreGuessPokemon = user.score.scoreGuessPokemon
+            user.scoreGuessPokemon += 1;
+            if(user.scoreGuessPokemon > user.maxScoreGuessPokemon){
+                user.maxScoreGuessPokemon = user.scoreGuessPokemon
             }
             await user.save();
             return res.status(200).json(user);
@@ -41,10 +42,20 @@ const resetUserScore = catchAsync(async (req, res, next) => {
             return next(new ErrorHandler("El usuario no existe", 400));
         }
 
-        user.score.scoreGuessPokemon = 0;
+        user.scoreGuessPokemon = 0;
 
         await user.save()
-        return res.status(200).json(user.score.scoreGuessPokemon);
+        return res.status(200).json(user.scoreGuessPokemon);
+    } catch (error) {
+        return next(new ErrorHandler(error.message, 500));
+    }
+})
+
+const getRanking = catchAsync(async (req, res, next) => {
+    try {
+        const topScores = await getTopScores();
+
+        return res.status(200).json(topScores)
     } catch (error) {
         return next(new ErrorHandler(error.message, 500));
     }
@@ -52,5 +63,6 @@ const resetUserScore = catchAsync(async (req, res, next) => {
 
 module.exports = {
     getGuessPokemonCoins,
-    resetUserScore
+    resetUserScore,
+    getRanking
 }

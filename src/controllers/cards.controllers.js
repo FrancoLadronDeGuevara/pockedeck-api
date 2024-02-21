@@ -7,6 +7,7 @@ const {
     deleteCardService,
 
 } = require('../services/cards.services');
+const { getUserDeckService } = require('../services/users.services');
 const catchAsync = require('../utils/catchAsync');
 const ErrorHandler = require('../utils/ErrorHandler');
 
@@ -21,6 +22,32 @@ const getByPokedexNumber = catchAsync(async (req, res) => {
     const response = await getByPokedexNumberService(pokedexNumber);
     if (!response) return res.status(404).json(`No se encontró la carta con el número ${pokedexNumber}`);
     res.status(200).json(response)
+})
+
+const sellCard = catchAsync(async (req, res) => {
+    try {
+        const payload = req.body;
+
+        const user = await getUserDeckService(req.user.id);
+
+        if (!user) return next(new ErrorHandler("Usuario no encontrado", 400));
+
+        const cardIndex = user.userDeck.findIndex(card => card.pokedexNumber === payload.pokedexNumber);
+
+        if (cardIndex === -1) {
+            return next(new ErrorHandler("Carta no encontrada en la pokedeck del usuario", 404));
+        }
+
+        const soldCard = user.userDeck.splice(cardIndex, 1)[0];
+
+        user.coins += payload.price;
+
+        await user.save();
+
+        res.status(200).json(user)
+    } catch (error) {
+        return next(new ErrorHandler(error.message, 500));
+    }
 })
 
 const getCardById = catchAsync(async (req, res) => {
@@ -68,11 +95,11 @@ const editCard = catchAsync(async (req, res, next) => {
     }
 
     if (payload.secondType) {
-        if(payload.secondType == 'SIN 2° TIPO'){
+        if (payload.secondType == 'SIN 2° TIPO') {
             card.types.pop()
-        }else if(card.types.length == 2){
+        } else if (card.types.length == 2) {
             card.types[1] = payload.secondType
-        }else{
+        } else {
             card.types.push(payload.secondType)
         }
     }
@@ -91,6 +118,7 @@ const deleteCard = catchAsync(async (req, res) => {
 module.exports = {
     getAllCards,
     getByPokedexNumber,
+    sellCard,
     getCardById,
     createCard,
     editCard,
