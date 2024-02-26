@@ -1,15 +1,15 @@
 const User = require("../models/user.model");
 
 const getTopScores = async () => {
-    topGuessPokemonScores = await User.find({}, 'username maxScoreGuessPokemon')
+    const topGuessPokemonScores = await User.find({}, 'username maxScoreGuessPokemon')
         .sort({ 'maxScoreGuessPokemon': -1 })
         .limit(5);
 
-    const topFlapHunterScores = await User.find({}, 'username maxScoreFlapHunter')
-        .sort({ 'maxScoreFlapHunter': -1 })
+    const topFlapHaunterScores = await User.find({}, 'username maxScoreFlapHaunter')
+        .sort({ 'maxScoreFlapHaunter': -1 })
         .limit(5);
 
-    return { topGuessPokemonScores, topFlapHunterScores };
+    return { topGuessPokemonScores, topFlapHaunterScores };
 }
 
 module.exports = {

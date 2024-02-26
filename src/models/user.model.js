@@ -51,7 +51,7 @@ const userSchema = new Schema(
             type: Number,
             default: 0
         },
-        scoreFlapHunter: {
+        scoreFlapHaunter: {
             type: Number,
             default: 0
         },
@@ -59,11 +59,14 @@ const userSchema = new Schema(
             type: Number,
             default: 0
         },
-        maxScoreFlapHunter: {
+        maxScoreFlapHaunter: {
             type: Number,
             default: 0
         },
-
+        lastSpinTime: {
+            type: Date,
+            default: Date.now(0),
+        }
     },
     { timestamps: true }
 );
@@ -72,7 +75,6 @@ userSchema.pre('save', function (next) {
     if (!this.username) {
         this.username = 'user' + Math.floor(Math.random() * 1000000)
     }
-
     next();
 });
 
