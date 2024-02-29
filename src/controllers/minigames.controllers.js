@@ -18,7 +18,7 @@ const getGuessPokemonCoins = catchAsync(async (req, res, next) => {
         if (payload.pokemonName.toLowerCase() === pokemon.name.toLowerCase()) {
             user.coins += 10;
             user.scoreGuessPokemon += 1;
-            if(user.scoreGuessPokemon > user.maxScoreGuessPokemon){
+            if (user.scoreGuessPokemon > user.maxScoreGuessPokemon) {
                 user.maxScoreGuessPokemon = user.scoreGuessPokemon
             }
             await user.save();
@@ -33,7 +33,33 @@ const getGuessPokemonCoins = catchAsync(async (req, res, next) => {
     }
 })
 
-const spinWheel = catchAsync( async (req, res, next) => {
+const getFlapHaunterCoins = catchAsync(async (req, res, next) => {
+    try {
+        const payload = req.body;
+        const user = await getUserService(req.user.id);
+
+        if (!user) {
+            return next(new ErrorHandler("El usuario no existe", 400));
+        }
+
+
+        if (payload.score > user.maxScoreFlapHaunter) {
+            user.maxScoreFlapHaunter = payload.score
+        }
+
+        const coinsForUser = payload.score * 5;
+        user.coins += coinsForUser;
+
+        await user.save();
+
+        return res.status(200).json(user);
+
+    } catch (error) {
+        return next(new ErrorHandler(error.message, 500));
+    }
+})
+
+const spinWheel = catchAsync(async (req, res, next) => {
     try {
         const user = await getUserService(req.user.id);
 
@@ -54,7 +80,7 @@ const spinWheel = catchAsync( async (req, res, next) => {
         if (hoursSinceLastSpin < 3) {
             return res.status(400).json({ message: "Debes esperar al menos 3 horas entre giros de la ruleta." });
         }
-        
+
         const prizesList = [100, 200, 0, 500, 50, 20, 0, 300];
 
         const randomValue = Math.floor(Math.random() * 8);
@@ -62,11 +88,11 @@ const spinWheel = catchAsync( async (req, res, next) => {
         const pointsData = prizesList[randomValue];
 
         user.coins += pointsData;
-        user.lastSpinTime = now; 
+        user.lastSpinTime = now;
 
         await user.save();
 
-        return res.status(200).json({pointsData, randomValue});
+        return res.status(200).json({ pointsData, randomValue });
     } catch (error) {
         return next(new ErrorHandler(error.message, 500));
     }
@@ -112,6 +138,7 @@ const getRealTime = async () => {
 
 module.exports = {
     getGuessPokemonCoins,
+    getFlapHaunterCoins,
     spinWheel,
     resetUserScore,
     getRanking
