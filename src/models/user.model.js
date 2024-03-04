@@ -43,15 +43,15 @@ const userSchema = new Schema(
                 ref: 'card'
             }
         ],
+        verified: {
+            type: Boolean,
+            default: false,
+        },
         disabled: {
             type: Boolean,
             default: false,
         },
         scoreGuessPokemon: {
-            type: Number,
-            default: 0
-        },
-        scoreFlapHaunter: {
             type: Number,
             default: 0
         },
@@ -65,7 +65,7 @@ const userSchema = new Schema(
         },
         lastSpinTime: {
             type: Date,
-            default: Date.now(0),
+            default: new Date('2024-01-01'),
         }
     },
     { timestamps: true }

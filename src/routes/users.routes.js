@@ -11,12 +11,18 @@ const {
     getUserProfile,
     deleteUser,
     getUserDeck,
+    getUserToVerify,
+    verifyUser,
 } = require('../controllers/users.controllers');
 const { createUsersValidations, idUserValidation } = require('../validations/users.validations');
 const { isAuthenticated, isAdmin } = require('../middlewares/auth');
 const { validateFields } = require('../middlewares/validateFields');
 
 route.post('/create', [createUsersValidations.email, createUsersValidations.password], validateFields, createUser);
+
+route.get('/get-user-to-verify/:id', getUserToVerify);
+
+route.patch('/verify-user/:id', verifyUser);
 
 route.post('/login-user', loginUser);
 

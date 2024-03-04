@@ -1,5 +1,3 @@
-/* eslint-disable no-unused-vars */
-
 const { body, param } = require('express-validator');
 const { getByEmailService } = require('../services/users.services');
 

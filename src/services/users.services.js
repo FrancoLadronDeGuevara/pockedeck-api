@@ -28,7 +28,8 @@ const getUserProfileService = async (username) => {
 
 const createUserService = async (payload) => {
     const newUser = new User(payload);
-    return await newUser.save();
+    const savedUser = await newUser.save();
+    return savedUser;
 };
 
 const editUserService = async (id, payload) => {
