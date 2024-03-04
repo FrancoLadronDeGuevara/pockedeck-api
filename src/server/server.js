@@ -9,24 +9,15 @@ const cors = require('cors');
 const cookieParser = require("cookie-parser");
 const errorHandlerMiddleware = require('../middlewares/errorHandler');
 
-
-const whitelist = ['https://pokedeck-game.vercel.app/'];
-const corsOptions = {
-    credentials: true,
-    origin: (origin, callback) => {
-        if (whitelist.indexOf(origin) !== -1) {
-            callback(null, true);
-        } else {
-            callback(console.error(`Not allowed by CORS -> ${origin}`));
-        }
-    },
-};
+app.use(cors({
+    origin: ['https://pokedeck-game.vercel.app',],
+    credentials: true
+  }));
 
 //middlewares
 app.use(morgan('dev'));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(cors(corsOptions));
 app.use(cookieParser());
 
 //routes
