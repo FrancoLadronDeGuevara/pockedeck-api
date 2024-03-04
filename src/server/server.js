@@ -10,7 +10,7 @@ const cookieParser = require("cookie-parser");
 const errorHandlerMiddleware = require('../middlewares/errorHandler');
 
 app.use(cors({
-    origin: ['https://pokedeck-game.vercel.app',],
+    origin: 'https://pokedeck-game.vercel.app',
     credentials: true
   }));
 
