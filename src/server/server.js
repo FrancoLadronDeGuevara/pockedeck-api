@@ -9,24 +9,19 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const errorHandlerMiddleware = require('../middlewares/errorHandler');
 
-app.use(
-  cors({
-    origin: 'https://pokedeck-game.vercel.app',
-    credentials: true,
-  }),
-);
-
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', 'https://pokedeck-game.vercel.app');
-  res.header('Access-Control-Allow-Credentials', true);
-  next();
-});
 
 //middlewares
 app.use(morgan('dev'));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
+
+app.use(
+  cors({
+    origin: 'https://pokedeck-game.vercel.app',
+    credentials: true,
+  }),
+);
 
 //routes
 const userRoutes = require('../routes/users.routes');
