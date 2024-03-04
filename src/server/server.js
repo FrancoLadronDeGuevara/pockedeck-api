@@ -10,7 +10,7 @@ const cookieParser = require("cookie-parser");
 const errorHandlerMiddleware = require('../middlewares/errorHandler');
 
 
-const whitelist = ['http://localhost:5173'];
+const whitelist = ['https://pokedeck-game.vercel.app/'];
 const corsOptions = {
     credentials: true,
     origin: (origin, callback) => {
