@@ -13,6 +13,7 @@ const {
     getUserDeck,
     getUserToVerify,
     verifyUser,
+    sendSupportEmail,
 } = require('../controllers/users.controllers');
 const { createUsersValidations, idUserValidation } = require('../validations/users.validations');
 const { isAuthenticated, isAdmin } = require('../middlewares/auth');
@@ -41,5 +42,7 @@ route.patch('/edit/:id', isAuthenticated, isAdmin('admin'), [idUserValidation.id
 route.patch('/update/:id', isAuthenticated, updateUser)
 
 route.delete('/delete/:id', isAuthenticated, isAdmin('admin'), [idUserValidation.id], validateFields, deleteUser);
+
+route.post('/send-support-email', isAuthenticated, sendSupportEmail)
 
 module.exports = route;

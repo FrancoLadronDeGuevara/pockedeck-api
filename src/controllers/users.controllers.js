@@ -82,18 +82,18 @@ const getUserToVerify = catchAsync(async (req, res, next) => {
 
 const verifyUser = catchAsync(async (req, res, next) => {
   try {
-    const payload = req.body
+    const payload = req.body;
     const user = await getUserService(req.params.id);
 
-    if (!user) return next(new ErrorHandler('El usuario no existe', 404))
+    if (!user) return next(new ErrorHandler('El usuario no existe', 404));
 
-    if (user.verified) return next(new ErrorHandler("El email ya se encuentra verificado", 400));
+    if (user.verified) return next(new ErrorHandler('El email ya se encuentra verificado', 400));
 
     user.verified = payload.active;
 
     await user.save();
 
-    res.status(201).json( { message: 'Cuenta verificada exitosamente'});
+    res.status(201).json({ message: 'Cuenta verificada exitosamente' });
   } catch (error) {
     return next(new ErrorHandler(error.message, 500));
   }
@@ -113,8 +113,8 @@ const loginUser = catchAsync(async (req, res, next) => {
 
     if (user.disabled) return next(new ErrorHandler('Tu cuenta se encuentra deshabilitada', 400));
 
-    if (!user.verified) return next(new ErrorHandler("Verifica tu cuenta para acceder",400))
-    
+    if (!user.verified) return next(new ErrorHandler('Verifica tu cuenta para acceder', 400));
+
     sendToken(user, 201, res);
   } catch (error) {
     return next(new ErrorHandler(error.message, 500));
@@ -237,6 +237,46 @@ const deleteUser = catchAsync(async (req, res) => {
   res.status(200).json(response);
 });
 
+const sendSupportEmail = catchAsync(async (req, res, next) => {
+  sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+
+  try {
+    const subjectRegex = /^(?=.*\S)[\s\S]{4,60}$/;
+    const messageRegex = /^(?=.*\S)[\s\S]{4,255}$/;
+
+    const payload = req.body;
+
+    if (!payload.subject || !payload.message) return res.status(400).json('Completa el formulario correctamente');
+
+    if(!subjectRegex.test(payload.subject)) return res.status(400).json('¡El asunto debe tener de 4 a 60 caracteres!');
+
+    if(!messageRegex.test(payload.message)) return res.status(400).json('¡El mensaje debe tener de 4 a 255 caracteres!');
+
+    const sendgridOptions = {
+      to: 'pokedecksupp@gmail.com',
+      from: payload.email,
+      subject: payload.subject,
+      html: `<p>${payload.message}</p>`,
+    };
+
+    sgMail
+      .send(sendgridOptions)
+      .then(() => {
+        console.log('Email send');
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+
+    res.status(201).json({
+      message: `¡Gracias por tu mensaje!`,
+    });
+
+  } catch (error) {
+    return next(new ErrorHandler(error.message, 500));
+  }
+});
+
 module.exports = {
   createUser,
   getUserToVerify,
@@ -250,4 +290,5 @@ module.exports = {
   editUser,
   updateUser,
   deleteUser,
+  sendSupportEmail,
 };
