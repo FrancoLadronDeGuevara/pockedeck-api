@@ -25,7 +25,7 @@ const createUser = catchAsync(async (req, res, next) => {
 
     const newUser = await createUserService(userWithPassHash);
 
-    const verificationLink = `https://pokedeck-game.vercel.app/verify-user/${newUser._id}`;
+    const verificationLink = `https://pokedeck-game.vercel.app/#/verify-user/${newUser._id}`;
 
     const sendgridOptions = {
       to: payload.email,
