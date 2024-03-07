@@ -24,7 +24,7 @@ const getByPokedexNumber = catchAsync(async (req, res) => {
     res.status(200).json(response)
 })
 
-const sellCard = catchAsync(async (req, res) => {
+const sellCard = catchAsync(async (req, res, next) => {
     try {
         const payload = req.body;
 

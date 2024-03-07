@@ -237,46 +237,6 @@ const deleteUser = catchAsync(async (req, res) => {
   res.status(200).json(response);
 });
 
-const sendSupportEmail = catchAsync(async (req, res, next) => {
-  sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-
-  try {
-    const subjectRegex = /^(?=.*\S)[\s\S]{4,60}$/;
-    const messageRegex = /^(?=.*\S)[\s\S]{4,255}$/;
-
-    const payload = req.body;
-
-    if (!payload.subject || !payload.message) return res.status(400).json('Completa el formulario correctamente');
-
-    if(!subjectRegex.test(payload.subject)) return res.status(400).json('¡El asunto debe tener de 4 a 60 caracteres!');
-
-    if(!messageRegex.test(payload.message)) return res.status(400).json('¡El mensaje debe tener de 4 a 255 caracteres!');
-
-    const sendgridOptions = {
-      to: 'pokedecksupp@gmail.com',
-      from: payload.email,
-      subject: payload.subject,
-      html: `<p>${payload.message}</p>`,
-    };
-
-    sgMail
-      .send(sendgridOptions)
-      .then(() => {
-        console.log('Email send');
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-
-    res.status(201).json({
-      message: `¡Gracias por tu mensaje!`,
-    });
-
-  } catch (error) {
-    return next(new ErrorHandler(error.message, 500));
-  }
-});
-
 module.exports = {
   createUser,
   getUserToVerify,
@@ -290,5 +250,4 @@ module.exports = {
   editUser,
   updateUser,
   deleteUser,
-  sendSupportEmail,
 };
