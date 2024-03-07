@@ -38,11 +38,8 @@ const sellCard = catchAsync(async (req, res, next) => {
             return next(new ErrorHandler("Carta no encontrada en la pokedeck del usuario", 404));
         }
 
-        const soldCard = user.userDeck.splice(cardIndex, 1)[0];
+        user.userDeck.splice(cardIndex, 1)[0];
 
-        const updatedUserDeck = user.userDeck.filter(card => card.pokedexNumber !== soldCard.pokedexNumber);
-
-        user.userDeck = updatedUserDeck;
         user.coins += payload.price;
 
         await user.save();
