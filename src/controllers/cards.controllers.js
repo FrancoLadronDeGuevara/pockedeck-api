@@ -40,8 +40,9 @@ const sellCard = catchAsync(async (req, res, next) => {
 
         const soldCard = user.userDeck.splice(cardIndex, 1)[0];
 
-        user.userDeck = soldCard
+        const updatedUserDeck = user.userDeck.filter(card => card.pokedexNumber !== soldCard.pokedexNumber);
 
+        user.userDeck = updatedUserDeck;
         user.coins += payload.price;
 
         await user.save();
