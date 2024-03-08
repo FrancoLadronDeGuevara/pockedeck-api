@@ -44,7 +44,7 @@ const sellCard = catchAsync(async (req, res, next) => {
 
         await user.save();
 
-        res.status(200).json(user)
+        res.status(200).json({coins: user.coins, userDeck: user.userDeck})
     } catch (error) {
         return next(new ErrorHandler(error.message, 500));
     }
